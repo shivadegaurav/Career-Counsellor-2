@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Career AI - User Profile</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #4f46e5;
+      --secondary-color: #3730a3;
+      --accent-color: #8b5cf6;
+      --bg-color: #f9fafb;
+      --card-bg: #ffffff;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --border-color: #e5e7eb;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+      padding: 0.5rem;
+    }
+    nav a:hover {
+      opacity: 0.8;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: var(--secondary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+      position: relative;
+    }
+    .profile-pic .fa-camera {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background-color: var(--accent-color);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      cursor: pointer;
+      border: 2px solid white;
+    }
+    .profile-info {
+      flex-grow: 1;
+    }
+    .profile-info h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .profile-meta {
+      display: flex;
+      gap: 1.5rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+    .profile-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-action {
+      color: var(--secondary-color);
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--secondary-color);
+      border-radius: 0.3rem;
+      transition: all 0.2s;
+    }
+    .card-action:hover {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+    .card-body {
+      margin-bottom: 1rem;
+    }
+    .iq-score {
+      text-align: center;
+      padding: 1rem 0;
+    }
+    .score-value {
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    .score-label {
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+    }
+    .score-date {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 1rem;
+    }
+    .personality-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+    }
+    .personality-trait {
+      text-align: center;
+    }
+    .trait-score {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: white;
+    }
+    .trait-name {
+      margin-top: 0.75rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    .trait-extraversion {
+      background-color: #ec4899;
+    }
+    .trait-agreeableness {
+      background-color: #14b8a6;
+    }
+    .trait-conscientiousness {
+      background-color: #8b5cf6;
+    }
+    .trait-neuroticism {
+      background-color: #f59e0b;
+    }
+    .trait-openness {
+      background-color: #3b82f6;
+    }
+    .resume-analysis {
+      padding: 1rem 0;
+    }
+    .analysis-preview {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 0.3rem;
+      background-color: #f8fafc;
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .resume-details-btn {
+      display: inline-block;
+      text-align: center;
+      margin-top: 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.3rem;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+    .resume-details-btn:hover {
+      background-color: var(--secondary-color);
+    }
+    .chat-history-container {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .chat-session {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      background-color: #f8fafc;
+    }
+    .chat-session-header {
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .chat-preview {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .chat-date {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+    .no-data-state {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text-secondary);
+    }
+    .no-data-state i {
+      font-size: 3rem;
+      color: #d1d5db;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.3rem;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    .btn-outline:hover {
+      background-color: #f0f4ff;
+    }
+    .error-message {
+      color: var(--error-color);
+      text-align: center;
+      padding: 1rem;
+      background-color: #fef2f2;
+      border-radius: 0.3rem;
+      margin-bottom: 1rem;
+    }
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+    footer {
+      background-color: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 3rem;
+    }
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      .profile-meta {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .personality-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .actions {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    @media (max-width: 480px) {
+      header {
+        padding: 1rem;
+      }
+      nav ul {
+        gap: 0.8rem;
+      }
+      .personality-grid {
+        grid-template-columns: 1fr;
+      }
+      .trait-score {
+        width: 60px;
+        height: 60px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <i class="fas fa-brain"></i> Career AI
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/profile" class="active"><i class="fas fa-user"></i> Profile</a></li>
+        <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div id="loadingState" class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Loading profile...
+    </div>
+
+    <div id="errorState" class="error-message" style="display: none;">
+      Failed to load profile. Please try refreshing the page.
+    </div>
+
+    <div id="profileContent" style="display: none;">
+      <div class="profile-header">
+        <div class="profile-pic">
+          <i class="fas fa-user"></i>
+          <div class="fa-camera"><i class="fas fa-camera"></i></div>
+        </div>
+        <div class="profile-info">
+          <h1 id="userName">Loading...</h1>
+          <div class="profile-meta">
+            <span><i class="fas fa-envelope"></i> <span id="userEmail">Loading...</span></span>
+            <span><i class="fas fa-calendar-alt"></i> Member since <span id="memberSince">Loading...</span></span>
+          </div>
+          <button class="btn btn-outline" id="editProfileBtn">
+            <i class="fas fa-pencil-alt"></i> Edit Profile
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid for Assessments & Resume Analysis -->
+      <div class="grid">
+        <!-- IQ Assessment Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fas fa-brain"></i> IQ Assessment</div>
+            <div class="card-action" id="takeIQTestBtn">Take Test</div>
+          </div>
+          <div class="card-body">
+            <div id="iqResults">
+              <!-- IQ results will be populated here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Personality Assessment Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fas fa-chart-pie"></i> Personality Assessment</div>
+            <div class="card-action" id="takePersonalityTestBtn">Take Test</div>
+          </div>
+          <div class="card-body">
+            <div id="personalityResults">
+              <!-- Personality results will be populated here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- Resume Analysis Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fas fa-file-alt"></i> Resume Analysis</div>
+            <div class="card-action" id="uploadResumeBtn">Upload Resume</div>
+          </div>
+          <div class="card-body">
+            <div id="resumeResults">
+              <!-- Resume results will be populated here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Career Counseling Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fas fa-comments"></i> Career Counseling</div>
+            <div class="card-action" id="startChatBtn">Start Chat</div>
+          </div>
+          <div class="card-body">
+            <div id="chatResults">
+              <!-- Chat history will be populated here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="exportProfileBtn"><i class="fas fa-download"></i> Export Profile</button>
+        <button class="btn btn-outline" id="printProfileBtn"><i class="fas fa-print"></i> Print Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Career AI. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Check authentication
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login';
+    }
+
+    // Global variables
+    let profileData = null;
+
+    // Utility functions
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    function formatDateTime(dateString) {
+      if (!dateString) return 'N/A';
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function showError(message) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
+      document.getElementById('errorState').textContent = message;
+      document.getElementById('profileContent').style.display = 'none';
+    }
+
+    function showContent() {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'none';
+      document.getElementById('profileContent').style.display = 'block';
+    }
+
+    // Render functions
+    function renderIQResults(iqAssessment) {
+      const container = document.getElementById('iqResults');
+      
+      if (!iqAssessment) {
+        container.innerHTML = `
+          <div class="no-data-state">
+            <i class="fas fa-chart-bar"></i>
+            <p>You haven't taken the IQ test yet.</p>
+            <button class="btn btn-primary" onclick="window.location.href='/iqtest'">Take IQ Test</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="iq-score">
+          <div class="score-value">${iqAssessment.calculatedIQ || '--'}</div>
+          <div class="score-label">${iqAssessment.interpretation || 'No interpretation'}</div>
+          <div class="score-date">Last taken: ${formatDate(iqAssessment.timestamp)}</div>
+        </div>
+      `;
+    }
+
+    function renderPersonalityResults(personalityAssessment) {
+      const container = document.getElementById('personalityResults');
+      
+      if (!personalityAssessment || !personalityAssessment.traitScores) {
+        container.innerHTML = `
+          <div class="no-data-state">
+            <i class="fas fa-user-chart"></i>
+            <p>You haven't taken the personality test yet.</p>
+            <button class="btn btn-primary" onclick="window.location.href='/iqtest'">Take Personality Test</button>
+          </div>
+        `;
+        return;
+      }
+
+      const traits = personalityAssessment.traitScores;
+      const traitNames = {
+        extraversion: 'Extraversion',
+        agreeableness: 'Agreeableness', 
+        conscientiousness: 'Conscientiousness',
+        neuroticism: 'Neuroticism',
+        openness: 'Openness'
+      };
+
+      let traitsHtml = '<div class="personality-grid">';
+      for (const [key, name] of Object.entries(traitNames)) {
+        const score = traits[key] || 0;
+        traitsHtml += `
+          <div class="personality-trait">
+            <div class="trait-score trait-${key}">${score}%</div>
+            <div class="trait-name">${name}</div>
+          </div>
+        `;
+      }
+      traitsHtml += '</div>';
+
+      // Add interpretation if available
+      if (personalityAssessment.interpretation && personalityAssessment.interpretation.description) {
+        traitsHtml += `
+          <div style="margin-top: 1rem; padding: 1rem; background-color: #f8fafc; border-radius: 0.3rem;">
+            <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">Personality Type: ${personalityAssessment.interpretation.type || 'N/A'}</h4>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">${personalityAssessment.interpretation.description}</p>
+          </div>
+        `;
+      }
+
+      traitsHtml += `<div class="score-date">Last taken: ${formatDate(personalityAssessment.timestamp)}</div>`;
+      container.innerHTML = traitsHtml;
+    }
+
+    function renderResumeResults(resumeAnalysis) {
+      const container = document.getElementById('resumeResults');
+      
+      if (!resumeAnalysis) {
+        container.innerHTML = `
+          <div class="no-data-state">
+            <i class="fas fa-file-upload"></i>
+            <p>Upload your resume to get professional analysis and improvement suggestions.</p>
+            <button class="btn btn-primary" onclick="window.location.href='/resume'">Upload Resume</button>
+          </div>
+        `;
+        return;
+      }
+
+      const analysisPreview = resumeAnalysis.rawAnalysis 
+        ? resumeAnalysis.rawAnalysis.substring(0, 300) + '...'
+        : 'Analysis completed successfully.';
+
+      container.innerHTML = `
+        <div class="resume-analysis">
+          <div class="analysis-preview">${analysisPreview}</div>
+          <div class="score-date">Analyzed: ${formatDate(resumeAnalysis.timestamp)}</div>
+          <a href="/resume" class="resume-details-btn">View Full Analysis</a>
+        </div>
+      `;
+    }
+
+    function renderChatHistory(chatHistory) {
+      const container = document.getElementById('chatResults');
+      
+      if (!chatHistory || chatHistory.length === 0) {
+        container.innerHTML = `
+          <div class="no-data-state">
+            <i class="fas fa-comments"></i>
+            <p>Start a conversation with our AI career counselor for personalized guidance.</p>
+            <button class="btn btn-primary" onclick="window.location.href='/chat'">Start Chat</button>
+          </div>
+        `;
+        return;
+      }
+
+      let chatHtml = '<div class="chat-history-container">';
+      chatHistory.slice(0, 3).forEach(chat => { // Show only last 3 sessions
+        const lastMessage = chat.messages[chat.messages.length - 1];
+        const messagePreview = lastMessage.content.length > 150 
+          ? lastMessage.content.substring(0, 150) + '...'
+          : lastMessage.content;
+
+        chatHtml += `
+          <div class="chat-session">
+            <div class="chat-session-header">Session: ${chat.sessionId}</div>
+            <div class="chat-preview">${messagePreview}</div>
+            <div class="chat-date">${formatDateTime(lastMessage.timestamp)}</div>
+          </div>
+        `;
+      });
+      chatHtml += '</div>';
+
+      if (chatHistory.length > 3) {
+        chatHtml += `<div style="text-align: center; margin-top: 1rem;">
+          <a href="/chat" style="color: var(--primary-color); text-decoration: none;">View all ${chatHistory.length} sessions</a>
+        </div>`;
+      }
+
+      container.innerHTML = chatHtml;
+    }
+
+    // Load profile data
+    async function loadProfile() {
+      try {
+        const response = await fetch('/api/profile', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+            return;
+          }
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        profileData = await response.json();
+        
+        // Update basic profile info
+        document.getElementById('userName').textContent = profileData.fullName || 'Unknown User';
+        document.getElementById('userEmail').textContent = profileData.email || 'No email';
+        document.getElementById('memberSince').textContent = formatDate(profileData.memberSince);
+
+        // Render assessment results
+        renderIQResults(profileData.iqAssessment);
+        renderPersonalityResults(profileData.personalityAssessment);
+        renderResumeResults(profileData.resumeAnalysis);
+        renderChatHistory(profileData.chatHistory);
+
+        showContent();
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        showError('Failed to load profile data. Please try refreshing the page.');
+      }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      loadProfile();
+
+      // Navigation buttons
+      document.getElementById('takeIQTestBtn').addEventListener('click', () => {
+        window.location.href = '/iqtest';
+      });
+
+      document.getElementById('takePersonalityTestBtn').addEventListener('click', () => {
+        window.location.href = '/iqtest';
+      });
+
+      document.getElementById('uploadResumeBtn').addEventListener('click', () => {
+        window.location.href = '/resume';
+      });
+
+      document.getElementById('startChatBtn').addEventListener('click', () => {
+        window.location.href = '/chat';
+      });
+
+      // Logout functionality
+      document.getElementById('logoutBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      });
+
+      // Export profile functionality
+      document.getElementById('exportProfileBtn').addEventListener('click', () => {
+        if (profileData) {
+          const dataStr = JSON.stringify(profileData, null, 2);
+          const dataBlob = new Blob([dataStr], {type: 'application/json'});
+          const url = URL.createObjectURL(dataBlob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${profileData.fullName}_profile.json`;
+          link.click();
+          URL.revokeObjectURL(url);
+        }
+      });
+
+      // Print profile functionality
+      document.getElementById('printProfileBtn').addEventListener('click', () => {
+        window.print();
+      });
+
+      // Edit profile functionality (placeholder)
+      document.getElementById('editProfileBtn').addEventListener('click', () => {
+        alert('Edit profile functionality coming soon!');
+      });
+    });
+  </script>
+</body>
+</html>
