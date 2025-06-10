@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('token', data.token);
-                window.location.href = '/index.html';
+                window.location.href = '/chat.html';
             } else {
                 const error = await response.json();
                 alert(error.message || 'Login failed. Please try again.');

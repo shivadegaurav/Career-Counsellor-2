@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Counseling Feedback - CareerAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .feedback-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .feedback-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .rating-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .rating-star {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .rating-star:hover {
+            background: #667eea;
+            transform: scale(1.1);
+        }
+
+        .rating-star.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: #edf2f7;
+            border-color: #667eea;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border-radius: 12px;
+            margin-top: 20px;
+            animation: slideIn 0.5s ease;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @media (max-width: 640px) {
+            .feedback-container {
+                padding: 24px;
+                margin: 10px;
+            }
+            
+            .title {
+                font-size: 24px;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float-random 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 40px;
+            height: 40px;
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float-random {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-30px) rotate(120deg);
+            }
+            66% {
+                transform: translateY(20px) rotate(240deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="feedback-container">
+        <div class="header">
+            <div class="logo">🤖</div>
+            <h1 class="title">How was your experience?</h1>
+            <p class="subtitle">Help us improve our AI career counseling assistant by sharing your feedback</p>
+        </div>
+
+        <form id="feedbackForm">
+            <div class="form-group">
+                <label class="form-label">Overall Satisfaction *</label>
+                <div class="rating-group" id="satisfaction-rating">
+                    <button type="button" class="rating-star" data-rating="1">⭐</button>
+                    <button type="button" class="rating-star" data-rating="2">⭐</button>
+                    <button type="button" class="rating-star" data-rating="3">⭐</button>
+                    <button type="button" class="rating-star" data-rating="4">⭐</button>
+                    <button type="button" class="rating-star" data-rating="5">⭐</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="session-type">Type of Career Guidance Received</label>
+                <select class="form-select" id="session-type" name="session-type">
+                    <option value="">Select session type</option>
+                    <option value="resume-review">Resume Review & Optimization</option>
+                    <option value="interview-prep">Interview Preparation</option>
+                    <option value="career-planning">Career Path Planning</option>
+                    <option value="skill-assessment">Skills Assessment</option>
+                    <option value="job-search">Job Search Strategy</option>
+                    <option value="salary-negotiation">Salary Negotiation</option>
+                    <option value="career-change">Career Change Guidance</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">What did you find most helpful?</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="helpful" value="personalized-advice">
+                        <span>Personalized Advice</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="helpful" value="quick-responses">
+                        <span>Quick Responses</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="helpful" value="comprehensive-analysis">
+                        <span>Comprehensive Analysis</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="helpful" value="actionable-suggestions">
+                        <span>Actionable Suggestions</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="helpful" value="industry-insights">
+                        <span>Industry Insights</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="helpful" value="resource-recommendations">
+                        <span>Resource Recommendations</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="improvements">What could we improve?</label>
+                <textarea class="form-textarea" id="improvements" name="improvements" placeholder="Share your suggestions for making our AI career counselor even better..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="additional-comments">Additional Comments</label>
+                <textarea class="form-textarea" id="additional-comments" name="additional-comments" placeholder="Any other thoughts or experiences you'd like to share?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email (optional)</label>
+                <input type="email" class="form-input" id="email" name="email" placeholder="your.email@example.com">
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Submit Feedback
+            </button>
+        </form>
+
+        <div class="success-message" id="success-message">
+            <h3>🎉 Thank you for your feedback!</h3>
+            <p>Your input helps us create better career guidance experiences.</p>
+        </div>
+    </div>
+
+    <script>
+        // Rating system functionality
+        const ratingStars = document.querySelectorAll('.rating-star');
+        let selectedRating = 0;
+
+        ratingStars.forEach(star => {
+            star.addEventListener('click', () => {
+                selectedRating = parseInt(star.dataset.rating);
+                updateRatingDisplay();
+            });
+
+            star.addEventListener('mouseenter', () => {
+                const hoverRating = parseInt(star.dataset.rating);
+                highlightStars(hoverRating);
+            });
+        });
+
+        document.getElementById('satisfaction-rating').addEventListener('mouseleave', () => {
+            updateRatingDisplay();
+        });
+
+        function highlightStars(rating) {
+            ratingStars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function updateRatingDisplay() {
+            highlightStars(selectedRating);
+        }
+
+        // Form submission
+        document.getElementById('feedbackForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Simulate form submission
+            const submitBtn = document.querySelector('.submit-btn');
+            const successMessage = document.getElementById('success-message');
+            
+            submitBtn.style.background = '#48bb78';
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                document.getElementById('feedbackForm').style.display = 'none';
+                successMessage.classList.add('show');
+                
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    document.getElementById('feedbackForm').style.display = 'block';
+                    successMessage.classList.remove('show');
+                    submitBtn.style.background = '';
+                    submitBtn.textContent = 'Submit Feedback';
+                    submitBtn.disabled = false;
+                    document.getElementById('feedbackForm').reset();
+                    selectedRating = 0;
+                    updateRatingDisplay();
+                }, 3000);
+            }, 1500);
+        });
+
+        // Add smooth animations to form elements
+        const formElements = document.querySelectorAll('.form-input, .form-textarea, .form-select');
+        formElements.forEach(element => {
+            element.addEventListener('focus', () => {
+                element.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            element.addEventListener('blur', () => {
+                element.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Checkbox interactions
+        const checkboxItems = document.querySelectorAll('.checkbox-item');
+        checkboxItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                checkbox.checked = !checkbox.checked;
+                
+                if (checkbox.checked) {
+                    item.style.background = '#e6fffa';
+                    item.style.borderColor = '#667eea';
+                } else {
+                    item.style.background = '#f7fafc';
+                    item.style.borderColor = '#e2e8f0';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

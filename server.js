@@ -108,9 +108,12 @@ const JWT_SECRET = 'your-secret-key';
 // ================================
 // AUTH & USER ROUTES
 // ================================
+app.get('/feedback', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'feedback.html'));
+});
 
 app.get('/chat', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'chat.html'));
 });
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
