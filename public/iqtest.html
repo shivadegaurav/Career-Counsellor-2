@@ -147,6 +147,15 @@
     </div>
 
     <script>
+        // Authentication check - redirect to login if no token
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token && window.location.pathname !== '/login.html') {
+                window.location.href = '/login.html';
+                return;
+            }
+        });
+
         let currentQuestion = 0;
         let score = 0;
         let totalQuestions = 10;
@@ -171,6 +180,14 @@
             const age = document.getElementById('age').value;
             if (!age || age < 5 || age > 120) {
                 alert('Please enter a valid age between 5 and 120');
+                return;
+            }
+
+            // Check authentication for both tests now
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please log in to take the assessment');
+                window.location.href = '/login.html';
                 return;
             }
 
@@ -319,19 +336,36 @@
             showLoading(true);
             
             try {
+                const token = localStorage.getItem('token');
                 let response;
+                
                 if (testType === 'iq') {
+                    // Add authentication header for IQ test now
                     response = await fetch('/api/calculate-iq', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
                         body: JSON.stringify({ age, score })
                     });
                 } else {
+                    // Add authentication header for personality assessment
                     response = await fetch('/api/analyze-personality', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
                         body: JSON.stringify({ age, answers })
                     });
+                }
+                
+                // Handle 401 responses by redirecting to login
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login.html';
+                    return;
                 }
                 
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -344,113 +378,113 @@
         }
 
         function displayResult(result) {
-    const testContainer = document.getElementById('test-container');
-    const resultDiv = document.getElementById('result');
-    
-    testContainer.classList.add('hidden');
-    resultDiv.classList.remove('hidden');
-    
-    if (testType === 'iq') {
-        let performanceLevel;
-        if (result.iq >= 130) performanceLevel = 'Exceptional';
-        else if (result.iq >= 120) performanceLevel = 'Superior';
-        else if (result.iq >= 110) performanceLevel = 'Above Average';
-        else if (result.iq >= 90) performanceLevel = 'Average';
-        else if (result.iq >= 80) performanceLevel = 'Below Average';
-        else performanceLevel = 'Needs Improvement';
+            const testContainer = document.getElementById('test-container');
+            const resultDiv = document.getElementById('result');
+            
+            testContainer.classList.add('hidden');
+            resultDiv.classList.remove('hidden');
+            
+            if (testType === 'iq') {
+                let performanceLevel;
+                if (result.iq >= 130) performanceLevel = 'Exceptional';
+                else if (result.iq >= 120) performanceLevel = 'Superior';
+                else if (result.iq >= 110) performanceLevel = 'Above Average';
+                else if (result.iq >= 90) performanceLevel = 'Average';
+                else if (result.iq >= 80) performanceLevel = 'Below Average';
+                else performanceLevel = 'Needs Improvement';
 
-        resultDiv.innerHTML = `
-            <div class="text-center space-y-6">
-                <h2 class="text-2xl font-bold text-gray-800">Your IQ Test Results</h2>
-                <div class="p-6 bg-purple-50 rounded-xl">
-                    <p class="text-4xl font-bold text-purple-700 mb-2">${result.iq}</p>
-                    <p class="text-purple-600 font-medium">IQ Score</p>
-                </div>
-                <div class="space-y-4">
-                    <p class="text-lg">Performance Level: <span class="font-semibold">${performanceLevel}</span></p>
-                    <p class="text-lg">Correct Answers: <span class="font-semibold">${score} out of ${totalQuestions}</span></p>
-                    <p class="text-gray-600 italic">${result.interpretation}</p>
-                </div>
-                <div class="pt-6">
-                    <button onclick="location.reload()" 
-                            class="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium">
-                        Take Test Again
-                    </button>
-                </div>
-            </div>
-        `;
-    } else {
-        const traitEmojis = {
-            'extraversion': '👥',
-            'agreeableness': '🤝',
-            'conscientiousness': '✓',
-            'neuroticism': '🎭',
-            'openness': '🌟'
-        };
-
-        const traitDescriptions = {
-            'extraversion': 'Social interaction and energy level',
-            'agreeableness': 'Cooperation and consideration of others',
-            'conscientiousness': 'Organization and responsibility',
-            'neuroticism': 'Emotional sensitivity and stability',
-            'openness': 'Curiosity and openness to new experiences'
-        };
-
-        let traitsHTML = '';
-        for (const [trait, score] of Object.entries(result.scores)) {
-            traitsHTML += `
-                <div class="mb-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-lg font-medium">${traitEmojis[trait]} ${trait.charAt(0).toUpperCase() + trait.slice(1)}</span>
-                        <span class="text-purple-600 font-semibold">${Math.round(score)}%</span>
+                resultDiv.innerHTML = `
+                    <div class="text-center space-y-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Your IQ Test Results</h2>
+                        <div class="p-6 bg-purple-50 rounded-xl">
+                            <p class="text-4xl font-bold text-purple-700 mb-2">${result.iq}</p>
+                            <p class="text-purple-600 font-medium">IQ Score</p>
+                        </div>
+                        <div class="space-y-4">
+                            <p class="text-lg">Performance Level: <span class="font-semibold">${performanceLevel}</span></p>
+                            <p class="text-lg">Correct Answers: <span class="font-semibold">${score} out of ${totalQuestions}</span></p>
+                            <p class="text-gray-600 italic">${result.interpretation}</p>
+                        </div>
+                        <div class="pt-6">
+                            <button onclick="location.reload()" 
+                                    class="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium">
+                                Take Test Again
+                            </button>
+                        </div>
                     </div>
-                    <div class="bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-purple-600 h-2.5 rounded-full" style="width: ${score}%"></div>
+                `;
+            } else {
+                const traitEmojis = {
+                    'extraversion': '👥',
+                    'agreeableness': '🤝',
+                    'conscientiousness': '✓',
+                    'neuroticism': '🎭',
+                    'openness': '🌟'
+                };
+
+                const traitDescriptions = {
+                    'extraversion': 'Social interaction and energy level',
+                    'agreeableness': 'Cooperation and consideration of others',
+                    'conscientiousness': 'Organization and responsibility',
+                    'neuroticism': 'Emotional sensitivity and stability',
+                    'openness': 'Curiosity and openness to new experiences'
+                };
+
+                let traitsHTML = '';
+                for (const [trait, score] of Object.entries(result.scores)) {
+                    traitsHTML += `
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-lg font-medium">${traitEmojis[trait]} ${trait.charAt(0).toUpperCase() + trait.slice(1)}</span>
+                                <span class="text-purple-600 font-semibold">${Math.round(score)}%</span>
+                            </div>
+                            <div class="bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-purple-600 h-2.5 rounded-full" style="width: ${score}%"></div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-1">${traitDescriptions[trait]}</p>
+                        </div>
+                    `;
+                }
+
+                resultDiv.innerHTML = `
+                    <div class="space-y-6">
+                        <h2 class="text-2xl font-bold text-gray-800 text-center">Your Personality Assessment Results</h2>
+                        
+                        <div class="bg-purple-50 rounded-xl p-6 mb-6">
+                            <h3 class="text-xl font-semibold text-purple-700 mb-2">Personality Type: ${result.interpretation.type}</h3>
+                            <p class="text-gray-700">${result.interpretation.description}</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-semibold text-gray-800">Trait Analysis</h3>
+                            ${traitsHTML}
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                            <div class="bg-green-50 rounded-xl p-4">
+                                <h4 class="text-lg font-semibold text-green-700 mb-2">Key Strengths</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    ${result.interpretation.strengths.map(s => `<li class="text-gray-700">${s}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 rounded-xl p-4">
+                                <h4 class="text-lg font-semibold text-blue-700 mb-2">Areas for Growth</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    ${result.interpretation.improvements.map(i => `<li class="text-gray-700">${i}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="text-center pt-6">
+                            <button onclick="location.reload()" 
+                                    class="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium">
+                                Take Test Again
+                            </button>
+                        </div>
                     </div>
-                    <p class="text-sm text-gray-600 mt-1">${traitDescriptions[trait]}</p>
-                </div>
-            `;
+                `;
+            }
         }
-
-        resultDiv.innerHTML = `
-            <div class="space-y-6">
-                <h2 class="text-2xl font-bold text-gray-800 text-center">Your Personality Assessment Results</h2>
-                
-                <div class="bg-purple-50 rounded-xl p-6 mb-6">
-                    <h3 class="text-xl font-semibold text-purple-700 mb-2">Personality Type: ${result.interpretation.type}</h3>
-                    <p class="text-gray-700">${result.interpretation.description}</p>
-                </div>
-
-                <div class="space-y-4">
-                    <h3 class="text-xl font-semibold text-gray-800">Trait Analysis</h3>
-                    ${traitsHTML}
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                    <div class="bg-green-50 rounded-xl p-4">
-                        <h4 class="text-lg font-semibold text-green-700 mb-2">Key Strengths</h4>
-                        <ul class="list-disc list-inside space-y-1">
-                            ${result.interpretation.strengths.map(s => `<li class="text-gray-700">${s}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div class="bg-blue-50 rounded-xl p-4">
-                        <h4 class="text-lg font-semibold text-blue-700 mb-2">Areas for Growth</h4>
-                        <ul class="list-disc list-inside space-y-1">
-                            ${result.interpretation.improvements.map(i => `<li class="text-gray-700">${i}</li>`).join('')}
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="text-center pt-6">
-                    <button onclick="location.reload()" 
-                            class="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium">
-                        Take Test Again
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-}
     </script>
 </body>
 </html>

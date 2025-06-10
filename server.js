@@ -832,7 +832,26 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
+//--------session error personality
+async function fixPersonalityAssessmentIndexes() {
+  try {
+    // Drop the problematic index
+    await PersonalityAssessmentModel.collection.dropIndex("sessionId_1");
+    console.log("Dropped sessionId index from personality assessments");
+  } catch (error) {
+    if (error.code === 27) {
+      console.log("sessionId index doesn't exist - no action needed");
+    } else {
+      console.log("Error dropping index:", error.message);
+    }
+  }
+}
 
+// Call this when your server starts
+mongoose.connection.once('open', async () => {
+  console.log("Connected to MongoDB");
+  await fixPersonalityAssessmentIndexes();
+});
 // ================================
 // START THE SERVER
 // ================================
