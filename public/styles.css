@@ -703,7 +703,9 @@ body.dark-theme .glass-effect {
 body.dark-theme header {
     background: rgba(15, 23, 42, 0.9);
 }
-
+body.dark-theme div.navigation{
+    background-color: #1e293b;
+}
 body.dark-theme .quick-actions {
     background: rgba(15, 23, 42, 0.5);
 }
@@ -805,7 +807,12 @@ body.dark-theme #mic-button.recording {
         gap: 0.5rem;
         justify-content: center;
     }
+    .input-wrapper{
 
+        flex-direction: column;
+        gap: 0.5rem;
+    
+    }
     .quick-action-btn {
         padding: 0.5rem 1rem;
         font-size: 0.8rem;
