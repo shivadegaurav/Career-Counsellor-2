@@ -346,7 +346,7 @@ Career Suggestion - Reason
         parts: [{ text: msg.content }]
       }));
       
-      const model = geminiAI.getGenerativeModel({ model: "gemini-3.0-flash" });
+      const model = geminiAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const chat = model.startChat({
         history: formattedHistory,
         generationConfig: { temperature: 0.3, topK: 40, topP: 0.8, maxOutputTokens: 1024 }
@@ -513,7 +513,7 @@ app.get('/api/questions', validateAge, async (req, res) => {
     const type = req.query.type || 'iq';
     const level = getDifficultyLevel(age);
     const randomSeed = Date.now();
-    const model = googleAI.getGenerativeModel({ model: "gemini-3.0-flash" });
+    const model = googleAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     let prompt;
     if (type === 'iq') {
       prompt = `Create a single unique IQ test question in JSON format. Use this random seed for uniqueness: ${randomSeed}. 
@@ -596,7 +596,7 @@ app.post('/api/analyze-personality', authenticateUser, validateAge, async (req, 
       return res.status(400).json({ error: 'Answers array is required' });
     }
 
-    const model = googleAI.getGenerativeModel({ model: "gemini-3.0-flash" });
+    const model = googleAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const traitScores = {};
     
     // Calculate trait scores
@@ -686,7 +686,7 @@ const upload = multer({
 
 async function analyzeWithGemini(text) {
   try {
-    const model = geminiAI.getGenerativeModel({ model: "gemini-3.0-flash" });
+    const model = geminiAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const prompt = 
 `As an expert resume reviewer, please analyze the following resume text and provide detailed, actionable feedback. Format your response in clearly separated sections with headings.
 
